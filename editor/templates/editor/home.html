@@ -1,0 +1,86 @@
+
+<!DOCTYPE>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Online Text Editor</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'editor/app.css' %}">
+  </head>
+  <body>
+    {% if user.is_authenticated %}
+    <header class="header">
+      <div class="col-md-4"><h1 class="header__h1">Online Editor</h1></div>
+      <div class="col-md-6"></div>
+      <a href="{% url 'logout' %}"><button class="sign-out">Sign Out</button></a>
+    </header>
+    <div id="doc">
+      <div id="background-ribbon"></div>
+      <div class="col-md-4">
+        <div id=filesystem>
+          <div>
+            <div class="filesystem-buttons"> 
+              <div class="fas fa-plus col-md-2"></div>
+              <div class="fas fa-folder col-md-2"></div>
+              <div class="fas fa-save col-md-2"></div>
+            </div>
+            <hr class="file-hr">
+          </div>
+          <div id="filesystem-view"> </div>
+        </div>
+      </div>
+      <div class="col-md-8" id="text-editor">
+        <div>
+          <div style="margin-top: -30px;">
+            <div class="editor-buttons"> 
+              <div class="fas fa-save col-md-2"></div>
+              <div class="fas fa-undo-alt col-md-2"></div>
+              <div class="fas fa-search col-md-2"></div>
+            </div>
+            <hr class="editor-hr">
+          </div>
+          <div id="editor-view"></div>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <header class="header" id="head">
+      <div class="col-md-4"><h1 style="color: #95637A;">Online Editor</h1></div>
+      <div class="col-md-6"></div>
+      <a href="{% url 'login' %}"><button class="sign-out">Sign In</button></a>
+      &nbsp
+      &nbsp
+      &nbsp
+      &nbsp
+      <a href="{% url 'signup' %}"><button class="sign-out">Sign Up</button></a>
+    </header>
+    <!--
+    <form class="sign-up-form">
+      <div class="container">
+        <h1>Sign Up</h1>
+        <p>Please fill in this form to create an account.</p>
+        <hr>
+        <label for="email"><b>Email</b></label>
+        <input class="input-field" type="text" placeholder="Enter Email" name="email" required>
+
+        <label for="psw"><b>Password</b></label>
+        <input class="input-field" type="password" placeholder="Enter Password" name="psw" required>
+
+        <label for="psw-repeat"><b>Repeat Password</b></label>
+        <input class="input-field" type="password" placeholder="Repeat Password" name="psw-repeat" required>
+        
+        <div class="clearfix">
+          <a href="{% url 'signup' %}"><button type="submit" class="signupbtn">Sign Up</button></a>
+        </div>
+      </div>
+    </form>-->
+    {% endif %}
+    <script src="{% static 'editor/app.js' %}"></script>
+  </body>
+</html>
