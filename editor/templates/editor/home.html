@@ -18,6 +18,9 @@
     <header class="header">
       <div class="col-md-4"><h1 class="header__h1">Online Editor</h1></div>
       <div class="col-md-6"></div>
+      <a><button class="sign-out">{{user.username}}</button></a>
+      &nbsp
+      &nbsp
       <a href="{% url 'logout' %}"><button class="sign-out">Sign Out</button></a>
     </header>
     <div id="doc">
@@ -25,20 +28,27 @@
       <div class="col-md-4">
         <div id=filesystem>
           <div>
-            <div class="filesystem-buttons"> 
+            <div class="filesystem-buttons">
               <div class="fas fa-plus col-md-2"></div>
               <div class="fas fa-folder col-md-2"></div>
               <div class="fas fa-save col-md-2"></div>
             </div>
-            <hr class="file-hr">
+            <hr class="file-hr" style="margin-top: -18% !important;">
           </div>
           <div id="filesystem-view"> </div>
         </div>
       </div>
+      <!--
+      <h2>{{ user.get_full_name }}</h2>
+      <ul>
+        <li>Username: {{ user.username }}</li>
+        <li>Location: {{ user.profile.location }}</li>
+        <li>Birth Date: {{ user.profile.birth_date }}</li>
+      </ul>-->
       <div class="col-md-8" id="text-editor">
         <div>
           <div style="margin-top: -30px;">
-            <div class="editor-buttons"> 
+            <div class="editor-buttons">
               <div class="fas fa-save col-md-2"></div>
               <div class="fas fa-undo-alt col-md-2"></div>
               <div class="fas fa-search col-md-2"></div>
@@ -51,7 +61,7 @@
     </div>
     {% else %}
     <header class="header" id="head">
-      <div class="col-md-4"><h1 style="color: #95637A;">Online Editor</h1></div>
+      <div class="col-md-4"><h1 style="color: #95637A; text-shadow: 1px 1px white;">Online Editor</h1></div>
       <div class="col-md-6"></div>
       <a href="{% url 'login' %}"><button class="sign-out">Sign In</button></a>
       &nbsp
@@ -74,12 +84,13 @@
 
         <label for="psw-repeat"><b>Repeat Password</b></label>
         <input class="input-field" type="password" placeholder="Repeat Password" name="psw-repeat" required>
-        
+
         <div class="clearfix">
           <a href="{% url 'signup' %}"><button type="submit" class="signupbtn">Sign Up</button></a>
         </div>
       </div>
     </form>-->
+
     {% endif %}
     <script src="{% static 'editor/app.js' %}"></script>
   </body>
