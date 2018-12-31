@@ -26,11 +26,13 @@ button a:hover{
 .file-hr {
   border-color: #95637A !important;
   border-style: solid !important;
+  margin-top: -18% !important;
 }
 
 .editor-hr {
   border-color: #95637A !important;
   border-style: solid !important;
+  margin-top: -6%;
 }
 .header {
   height: 3.5em;

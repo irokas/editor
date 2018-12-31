@@ -33,9 +33,15 @@
               <div class="fas fa-folder col-md-2"></div>
               <div class="fas fa-save col-md-2"></div>
             </div>
-            <hr class="file-hr" style="margin-top: -18% !important;">
+            <hr class="file-hr">
           </div>
-          <div id="filesystem-view"> </div>
+          <div id="filesystem-view">
+          {{ user.username }}
+          {% for file in d %}
+            {{ file }}
+            <br>
+          {% endfor %}
+          </div>
         </div>
       </div>
       <!--
@@ -55,7 +61,13 @@
             </div>
             <hr class="editor-hr">
           </div>
-          <div id="editor-view"></div>
+          <div id="editor-view">
+            {{ user.username }}
+            {% for file in d %}
+              {{ file }}
+              <br>
+            {% endfor %}
+          </div>
         </div>
       </div>
     </div>

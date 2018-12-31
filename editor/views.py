@@ -9,6 +9,9 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic import UpdateView
 from django.utils.decorators import method_decorator
+import os
+from django.http import HttpResponse,Http404
+
 #from .models import Profile
 
 
@@ -16,6 +19,25 @@ class IndexView(generic.ListView):
     template_name = 'editor/index.html'
     def get_queryset(self):
         return
+
+def register(request):
+    form=UserCreationForm()
+    return render(request, 'templates/registration/signup.html', {'form': form})
+
+
+def search_dir(request):
+    d = []
+    pth = "~/Desktop/arxeia/" + request.user.get_username()
+    for file in os.listdir(os.path.expanduser(pth)):
+        d.append(file)
+
+    context = {'d': d}
+    return render(request, "editor/home.html", context)
+
+    #return render(request, os.path.expanduser("~/Downloads/edit/myapp/editor/templates/editor/home.html"), context)
+
+
+
 """
 def signup(request):
     if request.method == 'POST':
@@ -53,4 +75,3 @@ class ProfileUpdateView(ProfileObjectMixin, UpdateView):
 
     pass  # That's All Folks!
     """
-    
