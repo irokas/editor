@@ -18,8 +18,27 @@ button a {
 button a:hover{
   color: white;
 }
+li.fs-api-directory-collapse > ul {
+  display: none;
+}
 
-.vertical  > *{
+ul {
+  list-style-type: none;
+}
+
+.fs-api-directory-handler {
+  cursor: pointer;
+}
+.fs-api-directory > .fs-api-directory-handler {
+  display: inline-block;
+  transform: rotate(90deg);
+}
+.fs-api-directory-collapse > .fs-api-directory-handler {
+  display: inline-block;
+  transform: rotate(0deg);
+}
+
+.vertical  > * {
     display :block;
     width: 100%;
 }
@@ -84,6 +103,8 @@ button a:hover{
   resize: none;
   overflow-y: scroll;
   height: 100%;
+  border-style: solid;
+  border-color: #95637A;
 }
 
 .sign-out {
@@ -94,7 +115,7 @@ button a:hover{
   border: none;
 }
 
-.filesystem-buttons {
+.filesystem_buttons {
   margin-top: -10%;
   height: 20%;
 }

@@ -11,14 +11,18 @@ from django.views.generic import UpdateView
 from django.utils.decorators import method_decorator
 import os
 from django.http import HttpResponse,Http404
+import json
+from django.http import JsonResponse
+
 
 #from .models import Profile
-
+"""
 
 class IndexView(generic.ListView):
     template_name = 'editor/index.html'
     def get_queryset(self):
         return
+"""
 
 def register(request):
     form=UserCreationForm()
@@ -30,13 +34,30 @@ def search_dir(request):
     pth = "~/Desktop/arxeia/" + request.user.get_username()
     for file in os.listdir(os.path.expanduser(pth)):
         d.append(file)
-
-    context = {'d': d}
+    context = {"d": d}
     return render(request, "editor/home.html", context)
 
-    #return render(request, os.path.expanduser("~/Downloads/edit/myapp/editor/templates/editor/home.html"), context)
+def create_filesystem(request):
+    return JsonResponse(create_json(os.path.expanduser("~/Desktop/arxeia/" + request.user.get_username())), safe=False)
 
 
+def create_json(pth):
+    filesystem = []
+    for file in os.listdir(pth):
+        file_dict = {"name":file, "absolute_path": pth + '/' + file, "type":"file", "children":None}
+        if os.path.isdir(file_dict["absolute_path"]):
+            file_dict["type"] = "directory"
+            file_dict["children"] = create_json(file_dict["absolute_path"])
+        filesystem.append(file_dict)
+    return filesystem
+
+
+def open_file(request, path):
+    f = open(os.path.expanduser(path), 'r+')
+    contents = f.read()
+    f.close()
+    context = {"contents": contents}
+    return render(request, "editor/home.html", context)
 
 """
 def signup(request):

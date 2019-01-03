@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from django.views.generic.base import TemplateView
 from editor import views as editor_views
 
 
@@ -24,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+    #path('', editor_views.search_dir, name='home'),
     path('', editor_views.search_dir, name='home'),
-
+    path('open', editor_views.create_filesystem, name='filesystem'),
 ]
