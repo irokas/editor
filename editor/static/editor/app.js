@@ -1,5 +1,4 @@
-// IIFE keeps our variables private
-// and gets executed immediately!
+
 async function renderUrl(url, container) {
   const response = await fetch(url, {mode: 'no-cors'});
   const payload = await response.json();
@@ -20,11 +19,14 @@ function renderInput(input, container) {
   container.appendChild(ulElement);
   return listItems;
 };
+
 function selectEntry(clickedElement, rootContainer) {
   rootContainer
     .querySelectorAll(".fs-api-selected")
     .forEach(entry => entry.classList.remove("fs-api-selected"));
-  clickedElement.classList.add("fs-api-selected");
+    if (clickedElement.classList.contains("fs-api-entry")){
+      clickedElement.classList.add("fs-api-selected");
+    }
 }
 function appendNewEntry(type, path, url) {
   const container = document.querySelector(`li[data-path="${url}"]`);
@@ -48,6 +50,11 @@ function createNewListItem(type, name, absolute_path) {
     liElement.appendChild(handler);
     nameElement.addEventListener("dblclick", function() {
       toggleDirectory(nameElement);
+    });
+  }
+  else {
+    nameElement.addEventListener("dblclick", function() {
+      getFileContents(absolute_path);
     });
   }
   liElement.appendChild(nameElement);
@@ -82,11 +89,130 @@ function alphabeticCompare(a, b) {
   return firstName > secondName ? 1 : secondName > firstName ? -1 : 0;
 }
 
-(function () {
-  let doc = document.getElementById('editor-view');
-  doc.contentEditable = true;
+async function getFileContents(path) {
+  if (document.getElementById("textarea")){
+    document.getElementById("textarea").remove();
+  }
+  const input = document.createElement("textarea");
+  input.id = "textarea";
+  document.getElementById("editor-view").appendChild(input);
+  if (path === "") {
+    path = document.getElementsByClassName("fs-api-selected")[0].dataset.path;
+  }
 
-  let filesystem = document.getElementById('filesystem');
-  url = "open"
-  renderUrl(url, filesystem_view);
+  //csrf = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+  const rawResponse = await fetch('open_file', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      //'X-Csrf-Token': csrf,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({path: path})
+  });
+  const content = await rawResponse.json();
+  const text = document.createTextNode(content);
+  input.appendChild(text);
+}
+
+async function updateFileContents() {
+  selected_file = document.getElementsByClassName("fs-api-selected")[0];
+
+  absolute_path = selected_file.dataset.path;
+  contents = document.getElementById("textarea").value;
+  await fetch('save_file', {
+    method: 'PUT',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({path: absolute_path, contents: contents})
+  });
+}
+
+async function createFile(path="") {
+  name = prompt("Give File Name");
+  selected_file = document.getElementsByClassName("fs-api-selected")[0];
+  directory_path = selected_file.dataset.path;
+  if (selected_file.classList.contains("fs-api-file")) {
+    directory_path = directory_path.match(/(.*)[\/\\]/)[1]||'';
+  }
+  path = directory_path + "/" + name;
+  await fetch('create_file', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({path: path})
+  });
+  document.getElementsByClassName("fs-api-tree")[0].remove();
+  renderUrl("open_filesystem", filesystem);
+}
+
+async function deleteEntry(){
+  selected_file = document.getElementsByClassName("fs-api-selected")[0];
+  path = selected_file.dataset.path;
+  if (selected_file.classList.contains("fs-api-file")){
+    type = "file";
+  }
+  else {
+    type = "directory"
+  }
+  await fetch('delete_entry', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({path: path, type: type})
+  });
+  document.getElementsByClassName("fs-api-tree")[0].remove();
+  renderUrl("open_filesystem", filesystem);
+}
+async function createDirectory(path="") {
+  name = prompt("Give Folder Name");
+  selected_file = document.getElementsByClassName("fs-api-selected")[0];
+  directory_path = selected_file.dataset.path;
+  if (selected_file.classList.contains("fs-api-file")) {
+    directory_path = directory_path.match(/(.*)[\/\\]/)[1]||'';
+  }
+  path = directory_path + "/" + name;
+  await fetch('create_directory', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({path: path})
+  });
+  document.getElementsByClassName("fs-api-tree")[0].remove();
+  renderUrl("open_filesystem", filesystem);
+}
+(function () {
+  save_button = document.getElementById("save-button");
+  save_button.addEventListener("click", function() {
+    updateFileContents();
+  });
+  edit_button = document.getElementById("edit_file");
+  edit_button.addEventListener("click", function() {
+    getFileContents("");
+  });
+
+  create_file = document.getElementById("create_file");
+  create_file.addEventListener("click", function() {
+    createFile();
+  });
+
+  delete_entry = document.getElementById("delete_entry");
+  delete_entry.addEventListener("click", function() {
+    deleteEntry()
+  });
+
+  create_directory = document.getElementById("create_directory");
+  create_directory.addEventListener("click", function() {
+    createDirectory();
+  });
+  const filesystem = document.getElementById('filesystem_view');
+  renderUrl("open_filesystem", filesystem);
 })()

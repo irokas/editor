@@ -18,7 +18,7 @@
     <header class="header">
       <div class="col-md-4"><h1 class="header__h1">Online Editor</h1></div>
       <div class="col-md-6"></div>
-      <a><button class="sign-out">{{user.username}}</button></a>
+      <a><button class="sign-out" id="username">{{user.username}}</button></a>
       &nbsp
       &nbsp
       &nbsp
@@ -31,9 +31,10 @@
         <div id=filesystem>
           <div>
             <div class="filesystem_buttons">
-              <div class="fas fa-plus col-md-2"></div>
-              <div class="fas fa-folder col-md-2"></div>
-              <div class="fas fa-save col-md-2"></div>
+              <div class="fas fa-edit col-md-2" id="edit_file"></div>
+              <div class="fas fa-plus col-md-2" id="create_file"></div>
+              <div class="fas fa-folder col-md-2" id = "create_directory"></div>
+              <div class="fas fa-trash col-md-2" id="delete_entry"></div>
             </div>
             <hr class="file-hr">
           </div>
@@ -45,12 +46,14 @@
         <div>
           <div style="margin-top: -30px;">
             <div class="editor-buttons">
-              <div class="fas fa-save col-md-2"></div>
+              <div class="fas fa-save col-md-2" id = "save-button"></div>
+              <!--
               <div class="fas fa-undo-alt col-md-2"></div>
-              <div class="fas fa-search col-md-2"></div>
+              <div class="fas fa-search col-md-2"></div>-->
             </div>
             <hr class="editor-hr">
           </div>
+          <!--{% csrf_token %}-->
           <div id="editor-view">
           </div>
         </div>
