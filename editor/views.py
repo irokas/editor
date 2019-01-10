@@ -31,9 +31,12 @@ def register(request):
 
 
 def search_dir(request):
+    directory = os.path.expanduser("~/Desktop/arxeia/" + request.user.get_username())
+    if not os.path.exists(directory):
+        os.makedirs(directory)
     context = {}
     return render(request, "editor/home.html", context)
-    
+
 @csrf_exempt
 def create_filesystem(request):
     return JsonResponse(create_json(os.path.expanduser("~/Desktop/arxeia/" + request.user.get_username())), safe=False)

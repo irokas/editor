@@ -26,6 +26,18 @@ li.fs-api-directory-collapse > ul {
 ul {
   list-style-type: none;
 }
+.btn-outline-info {
+  color: #95637A;
+  background-color: transparent;
+  background-image: none;
+  border-color: #95637A;
+}
+
+.btn-outline-info:hover {
+  color: #fff;
+  background-color: #95637A;
+  border-color: #95637A;
+}
 .fs-api-selected.fs-api-file, .fs-api-selected.fs-api-directory > .fs-api-entry-name{
   color: #95637A;
 }
@@ -48,13 +60,13 @@ ul {
 .file-hr {
   border-color: #95637A !important;
   border-style: solid !important;
-  margin-top: -18% !important;
+  margin-top: -20% !important;
 }
 
 .editor-hr {
   border-color: #95637A !important;
   border-style: solid !important;
-  margin-top: -6%;
+  margin-top: -6.7%;
 }
 .header {
   height: 3.5em;

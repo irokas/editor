@@ -11,10 +11,13 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     {% load static %}
+    <link rel="stylesheet" href="{% static 'lib/codemirror.css' %}">
+    <script src="{% static 'lib/codemirror.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'editor/app.css' %}">
   </head>
   <body>
     {% if user.is_authenticated %}
+
     <header class="header">
       <div class="col-md-4"><h1 class="header__h1">Online Editor</h1></div>
       <div class="col-md-6"></div>
@@ -25,7 +28,8 @@
       &nbsp
       <a href="{% url 'logout' %}"><button class="sign-out">Sign Out</button></a>
     </header>
-    <div id="doc">
+
+    <div>
       <div id="background-ribbon"></div>
       <div class="col-md-4">
         <div id=filesystem>
@@ -47,18 +51,15 @@
           <div style="margin-top: -30px;">
             <div class="editor-buttons">
               <div class="fas fa-save col-md-2" id = "save-button"></div>
-              <!--
-              <div class="fas fa-undo-alt col-md-2"></div>
-              <div class="fas fa-search col-md-2"></div>-->
             </div>
             <hr class="editor-hr">
           </div>
-          <!--{% csrf_token %}-->
           <div id="editor-view">
           </div>
         </div>
       </div>
     </div>
+    
     {% else %}
     <header class="header" id="head">
       <div class="col-md-4"><h1 style="color: #95637A; text-shadow: 1px 1px white;">Online Editor</h1></div>

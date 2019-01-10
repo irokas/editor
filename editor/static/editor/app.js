@@ -99,7 +99,10 @@ async function getFileContents(path) {
   if (path === "") {
     path = document.getElementsByClassName("fs-api-selected")[0].dataset.path;
   }
-
+  if (document.getElementById("open-file")) {
+    document.getElementById("open-file").removeAttribute("id");
+  }
+  document.getElementsByClassName("fs-api-selected")[0].id = "open-file";
   //csrf = document.getElementsByName("csrfmiddlewaretoken")[0].value;
   const rawResponse = await fetch('open_file', {
     method: 'POST',
@@ -116,9 +119,8 @@ async function getFileContents(path) {
 }
 
 async function updateFileContents() {
-  selected_file = document.getElementsByClassName("fs-api-selected")[0];
-
-  absolute_path = selected_file.dataset.path;
+  open_file = document.getElementById("open-file");
+  absolute_path = open_file.dataset.path;
   contents = document.getElementById("textarea").value;
   await fetch('save_file', {
     method: 'PUT',
@@ -132,10 +134,15 @@ async function updateFileContents() {
 
 async function createFile(path="") {
   name = prompt("Give File Name");
-  selected_file = document.getElementsByClassName("fs-api-selected")[0];
-  directory_path = selected_file.dataset.path;
-  if (selected_file.classList.contains("fs-api-file")) {
-    directory_path = directory_path.match(/(.*)[\/\\]/)[1]||'';
+  if (document.getElementsByClassName("fs-api-selected")[0] !== undefined ){
+    selected_file = document.getElementsByClassName("fs-api-selected")[0];
+    directory_path = selected_file.dataset.path;
+    if (selected_file.classList.contains("fs-api-file")) {
+      directory_path = directory_path.match(/(.*)[\/\\]/)[1]||'';
+    }
+  }
+  else {
+    directory_path = "/Users/irokasidiari/Desktop/arxeia/" + document.getElementById("username").textContent
   }
   path = directory_path + "/" + name;
   await fetch('create_file', {
@@ -172,10 +179,15 @@ async function deleteEntry(){
 }
 async function createDirectory(path="") {
   name = prompt("Give Folder Name");
-  selected_file = document.getElementsByClassName("fs-api-selected")[0];
-  directory_path = selected_file.dataset.path;
-  if (selected_file.classList.contains("fs-api-file")) {
-    directory_path = directory_path.match(/(.*)[\/\\]/)[1]||'';
+  if (document.getElementsByClassName("fs-api-selected")[0] !== undefined ){
+    selected_file = document.getElementsByClassName("fs-api-selected")[0];
+    directory_path = selected_file.dataset.path;
+    if (selected_file.classList.contains("fs-api-file")) {
+      directory_path = directory_path.match(/(.*)[\/\\]/)[1]||'';
+    }
+  }
+  else {
+    directory_path = "/Users/irokasidiari/Desktop/arxeia/" + document.getElementById("username").textContent
   }
   path = directory_path + "/" + name;
   await fetch('create_directory', {
@@ -190,6 +202,8 @@ async function createDirectory(path="") {
   renderUrl("open_filesystem", filesystem);
 }
 (function () {
+  const filesystem = document.getElementById('filesystem_view');
+
   save_button = document.getElementById("save-button");
   save_button.addEventListener("click", function() {
     updateFileContents();
@@ -213,6 +227,14 @@ async function createDirectory(path="") {
   create_directory.addEventListener("click", function() {
     createDirectory();
   });
-  const filesystem = document.getElementById('filesystem_view');
+
+  document.addEventListener("keydown", function(e) {
+    if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 83) {
+      e.preventDefault();
+      updateFileContents();
+    }
+  }, false);
+
+
   renderUrl("open_filesystem", filesystem);
 })()
