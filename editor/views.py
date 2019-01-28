@@ -10,6 +10,7 @@ from django.views.generic.detail import SingleObjectMixin
 from django.views.generic import UpdateView
 from django.utils.decorators import method_decorator
 import os
+import os.path
 from django.http import HttpResponse,Http404
 import json
 from django.http import JsonResponse
@@ -68,7 +69,8 @@ def save_file(request):
     body = json.loads(body_unicode)
     path = body['path']
     contents = body['contents']
-    f = open(path, 'r+')
+    os.remove(path);
+    f = open(path, 'w')
     f.write(contents)
     f.close()
     return JsonResponse(contents, safe=False)
@@ -78,6 +80,8 @@ def create_file(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
     path = body['path']
+    if os.path.exists(path):
+        return JsonResponse("exists", safe=False)
     f = open(path, 'w')
     f.close()
     return JsonResponse(path, safe=False)
@@ -99,42 +103,7 @@ def create_directory(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
     path = body['path']
+    if os.path.exists(path):
+        return JsonResponse("exists", safe=False)
     os.makedirs(path, 0o777)
     return JsonResponse(path, safe=False)
-"""
-def signup(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('home')
-    else:
-        form = UserCreationForm()
-    return render(request, 'signup.html', {'form': form})
-"""
-
-"""
-class ProfileObjectMixin(SingleObjectMixin):
-
-    model = Profile
-
-    def get_object(self):
-        try:
-            return self.request.user.get_profile()
-        except Profile.DoesNotExist:
-            raise NotImplemented(
-
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        klass = ProfileObjectMixin
-        return super(klass, self).dispatch(request, *args, **kwargs)
-"""
-"""
-class ProfileUpdateView(ProfileObjectMixin, UpdateView):
-
-    pass  # That's All Folks!
-    """

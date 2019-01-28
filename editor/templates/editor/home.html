@@ -13,6 +13,17 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'lib/codemirror.css' %}">
     <script src="{% static 'lib/codemirror.js' %}"></script>
+    <script src="{% static 'mode/javascript/javascript.js' %}"></script>
+    <script src="{% static 'mode/xml/xml.js' %}"></script>
+    <script src="{% static 'mode/css/css.js' %}"></script>
+    <script src="{% static 'mode/clike/clike.js' %}"></script>
+    <script src="{% static 'mode/python/python.js' %}"></script>
+    <script src="{% static 'addon/edit/closebrackets.js' %}"></script>
+
+
+
+
+
     <link rel="stylesheet" type="text/css" href="{% static 'editor/app.css' %}">
   </head>
   <body>
@@ -35,10 +46,10 @@
         <div id=filesystem>
           <div>
             <div class="filesystem_buttons">
-              <div class="fas fa-edit col-md-2" id="edit_file"></div>
-              <div class="fas fa-plus col-md-2" id="create_file"></div>
-              <div class="fas fa-folder col-md-2" id = "create_directory"></div>
-              <div class="fas fa-trash col-md-2" id="delete_entry"></div>
+              <div class="fas fa-edit col-md-2 icon" id="edit_file"></div>
+              <div class="fas fa-plus col-md-2 icon" id="create_file"></div>
+              <div class="fas fa-folder col-md-2 icon" id = "create_directory"></div>
+              <div class="fas fa-trash col-md-2 icon" id="delete_entry"></div>
             </div>
             <hr class="file-hr">
           </div>
@@ -50,7 +61,7 @@
         <div>
           <div style="margin-top: -30px;">
             <div class="editor-buttons">
-              <div class="fas fa-save col-md-2" id = "save-button"></div>
+              <div class="fas fa-save col-md-2 icon" id = "save-button"></div>
             </div>
             <hr class="editor-hr">
           </div>
@@ -59,7 +70,7 @@
         </div>
       </div>
     </div>
-    
+
     {% else %}
     <header class="header" id="head">
       <div class="col-md-4"><h1 style="color: #95637A; text-shadow: 1px 1px white;">Online Editor</h1></div>

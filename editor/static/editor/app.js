@@ -92,23 +92,25 @@ function alphabeticCompare(a, b) {
 async function getFileContents(path) {
   if (document.getElementById("textarea")){
     document.getElementById("textarea").remove();
+    document.getElementsByClassName("CodeMirror")[0].remove();
   }
   const input = document.createElement("textarea");
   input.id = "textarea";
+
+
   document.getElementById("editor-view").appendChild(input);
   if (path === "") {
     path = document.getElementsByClassName("fs-api-selected")[0].dataset.path;
   }
-  if (document.getElementById("open-file")) {
-    document.getElementById("open-file").removeAttribute("id");
+  open_file = document.getElementById("open-file");
+  if (open_file) {
+    open_file.removeAttribute("id");
   }
   document.getElementsByClassName("fs-api-selected")[0].id = "open-file";
-  //csrf = document.getElementsByName("csrfmiddlewaretoken")[0].value;
   const rawResponse = await fetch('open_file', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
-      //'X-Csrf-Token': csrf,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({path: path})
@@ -116,12 +118,42 @@ async function getFileContents(path) {
   const content = await rawResponse.json();
   const text = document.createTextNode(content);
   input.appendChild(text);
+  myCodeMirror = CodeMirror.fromTextArea(document.getElementById("textarea"),  {
+      lineNumbers: true,
+      matchBrackets: true,
+      styleActiveLine: true,
+      autoCloseBrackets: true,
+    }
+  );
+  filename = document.getElementsByClassName("fs-api-selected")[0].firstChild.textContent;
+  extension = (filename.split('.').pop());
+  if (extension === 'js'){
+    myCodeMirror.setOption('mode', 'javascript');
+  }
+  else if (extension === 'html'){
+    myCodeMirror.setOption('mode', 'xml');
+  }
+  else if (extension === 'css'){
+    myCodeMirror.setOption('mode', 'css');
+  }
+  else if (extension === 'py'){
+    myCodeMirror.setOption('mode', 'python');
+  }
+  else if (extension === 'java'){
+    myCodeMirror.setOption('mode', 'text/x-java');
+  }
+  else if (extension === 'cpp'){
+    myCodeMirror.setOption('mode', 'text/x-c++src');
+  }
+  else if (extension === 'c'){
+    myCodeMirror.setOption('mode', 'text/x-csrc');
+  }
 }
 
 async function updateFileContents() {
   open_file = document.getElementById("open-file");
   absolute_path = open_file.dataset.path;
-  contents = document.getElementById("textarea").value;
+  contents = myCodeMirror.getValue();
   await fetch('save_file', {
     method: 'PUT',
     headers: {
@@ -145,16 +177,23 @@ async function createFile(path="") {
     directory_path = "/Users/irokasidiari/Desktop/arxeia/" + document.getElementById("username").textContent
   }
   path = directory_path + "/" + name;
-  await fetch('create_file', {
+  const rawResponse = await fetch('create_file', {
     method: 'POST',
+
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({path: path})
   });
-  document.getElementsByClassName("fs-api-tree")[0].remove();
-  renderUrl("open_filesystem", filesystem);
+  const resp = await rawResponse.json();
+  if (resp === "exists"){
+    alert("A file with that name already exists!");
+  }
+  else {
+    document.getElementsByClassName("fs-api-tree")[0].remove();
+    renderUrl("open_filesystem", filesystem);
+  }
 }
 
 async function deleteEntry(){
@@ -190,7 +229,7 @@ async function createDirectory(path="") {
     directory_path = "/Users/irokasidiari/Desktop/arxeia/" + document.getElementById("username").textContent
   }
   path = directory_path + "/" + name;
-  await fetch('create_directory', {
+  const rawResponse = await fetch('create_directory', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -198,8 +237,14 @@ async function createDirectory(path="") {
     },
     body: JSON.stringify({path: path})
   });
-  document.getElementsByClassName("fs-api-tree")[0].remove();
-  renderUrl("open_filesystem", filesystem);
+  const resp = await rawResponse.json();
+  if (resp === "exists"){
+    alert("A folder with that name already exists!");
+  }
+  else {
+    document.getElementsByClassName("fs-api-tree")[0].remove();
+    renderUrl("open_filesystem", filesystem);
+  }
 }
 (function () {
   const filesystem = document.getElementById('filesystem_view');
@@ -233,8 +278,15 @@ async function createDirectory(path="") {
       e.preventDefault();
       updateFileContents();
     }
+    if (event.keyCode == 8) {
+      e.preventDefault();
+      deleteEntry();
+    }
+    if (event.keyCode == 46) {
+      e.preventDefault();
+      deleteEntry();
+    }
   }, false);
-
-
+  let myCodeMirror;
   renderUrl("open_filesystem", filesystem);
 })()
